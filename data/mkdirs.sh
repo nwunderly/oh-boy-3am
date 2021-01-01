@@ -1,0 +1,1 @@
+while read line rest; do mkdir -p "${line}"; done <./timezones.txt
