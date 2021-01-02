@@ -12,20 +12,13 @@ type Bot struct {
 }
 
 func New(prefix string, token string, debug bool) *Bot {
-	session, err := discordgo.New("Bot " + token)
+	cmdBot, err := commands.NewBot(prefix, token)
 	if err != nil {
 		panic(err)
 	}
 
 	bot := &Bot{
-		Bot: &commands.Bot{
-			Prefix:          prefix,
-			CaseInsensitive: true,
-			Session:         session,
-			Commands:        nil,
-			Cogs:            nil,
-			HelpCommand:     nil,
-		},
+		Bot: cmdBot,
 		Debug: debug,
 	}
 
@@ -38,10 +31,10 @@ func (bot *Bot) Run() {
 
 	// Setup trigger to launch tasks that are on timers
 	bot.Session.AddHandlerOnce(
-		func (session *discordgo.Session, ready *discordgo.Ready) {
+		func(session *discordgo.Session, ready *discordgo.Ready) {
 			whenReady <- true
 			close(whenReady)
-	})
+		})
 
 	// Start timed tasks when the bot is ready
 	go func() {
@@ -50,9 +43,5 @@ func (bot *Bot) Run() {
 		bot.LaunchTimedTasks()
 	}()
 
-	// Run the bot
-	//bot.Bot.Run()
-
-	fmt.Println(Timezones)
+	bot.Bot.Run()
 }
-

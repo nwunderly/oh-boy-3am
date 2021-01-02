@@ -7,7 +7,7 @@ import (
 )
 
 type Args struct {
-	Prod bool
+	Prod  bool
 	Debug bool
 }
 
@@ -32,7 +32,6 @@ func parseArgs() Args {
 	return Args{Prod: *prod, Debug: *debug}
 }
 
-
 func main() {
 	args := parseArgs()
 
@@ -43,7 +42,7 @@ func main() {
 		token = tokenDev
 	}
 
-	b := bot.New("", token, args.Debug)
+	b := bot.New(":=", token, args.Debug)
 
 	b.Run()
 }
