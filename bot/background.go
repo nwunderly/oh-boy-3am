@@ -3,7 +3,6 @@ package bot
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"strings"
 	"time"
 )
 
@@ -30,7 +29,7 @@ func Is3AmSomewhere() (bool, Timezone) {
 		localTime := timestamp.Add(offset)
 		fmt.Printf("TIME FOR TIMEZONE %s: %s\n", tz.Name, localTime)
 		if localTime.Hour() == 3 && localTime.Minute() == 0 {
-			fmt.Printf("3AM IN TIMEZONE %s\n", strings.Replace(tz.Name, ".", ":", -1))
+			fmt.Printf("3AM IN TIMEZONE %s\n", tz.Name)
 			return true, tz
 		}
 	}
@@ -55,7 +54,7 @@ func (bot *Bot) Dispatch3amEvent(tz Timezone, guild *discordgo.Guild) {
 	juan := "576168356823040010"
 	revChannel := "577701223554351110"
 	if guild.ID == juan {
-		_, err := bot.Session.ChannelMessageSend(revChannel, "bong "+tz.Name)
+		_, err := bot.Session.ChannelMessageSend(revChannel, fmt.Sprintf("OH BOY 3AM (%s)", tz.Name))
 		if err != nil {
 			panic(err)
 		}

@@ -18,7 +18,7 @@ func New(prefix string, token string, debug bool) *Bot {
 	}
 
 	bot := &Bot{
-		Bot: cmdBot,
+		Bot:   cmdBot,
 		Debug: debug,
 	}
 
