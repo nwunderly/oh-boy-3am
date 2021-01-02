@@ -1,4 +1,7 @@
 git pull
+
+export GOPATH=""
+
 docker build . --tag 3am:latest
 docker run -d \
  --name 3am \

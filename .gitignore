@@ -16,3 +16,4 @@
 
 # extra
 .idea/
+auth.go
