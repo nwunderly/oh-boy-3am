@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 type Timezone struct {
@@ -32,5 +33,8 @@ func LoadTimezoneData() []Timezone {
 }
 
 func (tz Timezone) Is3Am() bool {
-	return false
+	timestamp := time.Now().UTC()
+	offset := time.Hour*time.Duration(tz.OffsetHr) + time.Minute*time.Duration(tz.OffsetMin)
+	localTime := timestamp.Add(offset)
+	return localTime.Hour() == 3 && localTime.Minute() == 0
 }
