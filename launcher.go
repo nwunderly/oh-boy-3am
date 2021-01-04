@@ -1,21 +1,23 @@
 package main
 
 import (
+	"context"
 	"github.com/akamensky/argparse"
 	"github.com/nwunderly/oh-boy-3am/bot"
+	"github.com/nwunderly/oh-boy-3am/db"
 	"os"
 )
 
 type Args struct {
-	Prod  bool
+	Dev  bool
 	Debug bool
 }
 
 func parseArgs() Args {
 	parser := argparse.NewParser("Oh boy, 3AM!", "The most useful discord bot.")
-	prod := parser.Flag("", "prod", &argparse.Options{
+	dev := parser.Flag("", "dev", &argparse.Options{
 		Required: false,
-		Help:     "Whether to use production token or run as dev bot. Defaults to",
+		Help:     "Whether to use production token or run as dev bot. Production also uses a local database connection.",
 		Default:  false,
 	})
 	debug := parser.Flag("", "debug", &argparse.Options{
@@ -29,20 +31,30 @@ func parseArgs() Args {
 		panic(err)
 	}
 
-	return Args{Prod: *prod, Debug: *debug}
+	return Args{Dev: *dev, Debug: *debug}
 }
 
 func main() {
 	args := parseArgs()
 
 	var token string
-	if args.Prod {
-		token = tokenProd
-	} else {
+	var postgresURL string
+
+	if args.Dev {
 		token = tokenDev
+		postgresURL = postgresExternalURL
+	} else {
+		token = tokenProd
+		postgresURL = postgresInternalURL
 	}
 
 	b := bot.New(":=", token, args.Debug)
+
+	err := db.Database.Connect(postgresURL)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Database.Conn.Close(context.Background())
 
 	b.Run()
 }

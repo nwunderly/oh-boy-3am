@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/nwunderly/oh-boy-3am/db"
 	"time"
 )
 
@@ -45,10 +46,9 @@ func (bot *Bot) ThreeAmEventTimer() {
 }
 
 func (bot *Bot) Dispatch3amEvent(tz Timezone, guild *discordgo.Guild) {
-	juan := "576168356823040010"
-	revChannel := "577701223554351110"
-	if guild.ID == juan {
-		_, err := bot.Session.ChannelMessageSend(revChannel, fmt.Sprintf("OH BOY 3AM (%s)", tz.Name))
+	channelID, ok := db.Database.GetChannelID(guild.ID)
+	if ok {
+		_, err := bot.Session.ChannelMessageSend(channelID, fmt.Sprintf("OH BOY 3AM (%s)", tz.Name))
 		if err != nil {
 			panic(err)
 		}

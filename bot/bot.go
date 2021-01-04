@@ -43,5 +43,10 @@ func (bot *Bot) Run() {
 		bot.LaunchTimedTasks()
 	}()
 
+	// Add commands
+	_, _ = bot.Command("viewconfig", "Show configured 3am announcement channel.", ViewConfig)
+	_, _ = bot.Command("setconfig", "Configure this guild's 3am announcement channel.", SetConfig)
+	_, _ = bot.Command("delconfig", "Delete this guild's configuration.", DelConfig)
+
 	bot.Bot.Run()
 }
