@@ -59,6 +59,7 @@ func (db *DB) GetChannelID(guildID string) (string, bool) {
 	err := db.Conn.QueryRow(context.Background(),
 		"SELECT channel_id FROM guild_config WHERE guild_id = $1", guildID).Scan(&channelID)
 	if err != nil {
+		fmt.Println(err)
 		return "", false
 	}
 
@@ -111,5 +112,3 @@ func (db *DB) DelChannelID(guildID string) error {
 		"DELETE FROM guild_config WHERE guild_id = $1", guildID)
 	return err
 }
-
-

@@ -36,8 +36,10 @@ func Is3AmSomewhere() (bool, Timezone) {
 func (bot *Bot) ThreeAmEventTimer() {
 	for {
 		if is3am, tz := Is3AmSomewhere(); is3am {
+			fmt.Println("3am detected in", tz)
 			for _, guild := range bot.Session.State.Guilds {
-				go bot.Dispatch3amEvent(tz, guild)
+				fmt.Println("\tdispatching 3am event to guild", guild.ID)
+				bot.Dispatch3amEvent(tz, guild)
 			}
 			time.Sleep(time.Minute * 10)
 		}
@@ -48,9 +50,12 @@ func (bot *Bot) ThreeAmEventTimer() {
 func (bot *Bot) Dispatch3amEvent(tz Timezone, guild *discordgo.Guild) {
 	channelID, ok := db.Database.GetChannelID(guild.ID)
 	if ok {
+		fmt.Println("\t\tguild", guild.ID, "has 3am events configured for channel", channelID)
 		_, err := bot.Session.ChannelMessageSend(channelID, fmt.Sprintf("OH BOY 3AM (%s)", tz.Name))
 		if err != nil {
 			panic(err)
 		}
+	} else {
+		fmt.Println("\t\tcould not find a channel for guild", guild.ID)
 	}
 }
